@@ -10,9 +10,12 @@ import {
 } from 'react-icons/fa'
 import {FaTimesCircle} from 'react-icons/fa'
 import Tooltip from '@reach/tooltip'
-// this is where we make most of the mutations for list items
-// 🐨 get useListItem, useUpdateListItem, useRemoveListItem, and useCreateListItem
-// from 'utils/list-items'
+import {
+  useListItem,
+  useUpdateListItem,
+  useRemoveListItem,
+  useCreateListItem,
+} from 'utils/list-items'
 import * as colors from 'styles/colors'
 import {useAsync} from 'utils/use-async'
 import {CircleButton, Spinner} from './lib'
@@ -49,13 +52,11 @@ function TooltipButton({label, highlight, onClick, icon, ...rest}) {
 }
 
 function StatusButtons({book}) {
-  // 🐨 assign listItem to a call to useListItem passing the book.id
-  const listItem = null
+  const listItem = useListItem(book.id)
 
-  // 🐨 call useUpdateListItem and call the mutate function "update"
-  // 💰 const [update] = useUpdateListItem()
-  // 🐨 call useRemoveListItem and call the mutate function "remove"
-  // 🐨 call useCreateListItem and call the mutate function "create"
+  const [update] = useUpdateListItem()
+  const [remove] = useRemoveListItem()
+  const [create] = useCreateListItem()
 
   return (
     <React.Fragment>
@@ -64,18 +65,14 @@ function StatusButtons({book}) {
           <TooltipButton
             label="Unmark as read"
             highlight={colors.yellow}
-            // 🐨 add an onClick handler to update the list item's finishDate to null
-            // which will mark the list item as unread
-            // by calling update with ({id: listItem.id, finishDate: null})
+            onClick={() => update({id: listItem.id, finishDate: null})}
             icon={<FaBook />}
           />
         ) : (
           <TooltipButton
             label="Mark as read"
             highlight={colors.green}
-            // 🐨 add an onClick handler to update the list item's finishDate to "right now"
-            // which will mark the list item as unread
-            // by calling update with ({id: listItem.id, finishDate: Date.now()})
+            onClick={() => update({id: listItem.id, finishDate: Date.now()})}
             icon={<FaCheckCircle />}
           />
         )
@@ -84,16 +81,14 @@ function StatusButtons({book}) {
         <TooltipButton
           label="Remove from list"
           highlight={colors.danger}
-          // 🐨 add an onClick handler to remove the list item by
-          // calling remove with ({id: listItem.id})
+          onClick={() => remove({id: listItem.id})}
           icon={<FaMinusCircle />}
         />
       ) : (
         <TooltipButton
           label="Add to list"
           highlight={colors.indigo}
-          // 🐨 add an onClick handler to create a list item by
-          // calling create with ({bookId: book.id})
+          onClick={() => create({bookId: book.id})}
           icon={<FaPlusCircle />}
         />
       )}

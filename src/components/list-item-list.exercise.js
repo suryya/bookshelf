@@ -1,13 +1,12 @@
 /** @jsx jsx */
 import {jsx} from '@emotion/core'
 
-// 🐨 get useListItems from 'utils/list-items'
+import {useListItems} from 'utils/list-items'
 import {BookListUL} from './lib'
 import {BookRow} from './book-row'
 
 function ListItemList({filterListItems, noListItems, noFilteredListItems}) {
-  // 🐨 call useListItems and assign listItems to the result
-  const listItems = []
+  const listItems = useListItems()
 
   const filteredListItems = listItems.filter(filterListItems)
 

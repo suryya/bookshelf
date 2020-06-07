@@ -2,7 +2,7 @@
 import {jsx} from '@emotion/core'
 
 import {Link} from 'react-router-dom'
-// 🐨 get useListItem from 'utils/list-items'
+import {useListItem} from 'utils/list-items'
 import * as mq from 'styles/media-queries'
 import * as colors from 'styles/colors'
 import {StatusButtons} from './status-buttons'
@@ -10,9 +10,7 @@ import {Rating} from './rating'
 
 function BookRow({book}) {
   const {title, author, coverImageUrl} = book
-  // 🐨 assign listItem to a call to useListItem passing the book.id
-  // to get the list item for the book for this row
-  const listItem = null
+  const listItem = useListItem(book.id)
 
   const id = `book-row-book-${book.id}`
 

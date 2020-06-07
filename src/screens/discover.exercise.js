@@ -4,28 +4,14 @@ import {jsx} from '@emotion/core'
 import React from 'react'
 import Tooltip from '@reach/tooltip'
 import {FaSearch, FaTimes} from 'react-icons/fa'
-import * as booksClient from 'utils/books-client'
-// 🐨 get useBookSearch from 'utils/books'
-import {useAsync} from 'utils/use-async'
+import {useBookSearch} from 'utils/books'
 import {BookRow} from 'components/book-row'
 import {BookListUL, Spinner, Input} from 'components/lib'
 
 function DiscoverBooksScreen() {
   const [query, setQuery] = React.useState('')
   const [hasSearched, setHasSearched] = React.useState()
-
-  // 🐨 replace this logic with a call to useBookSearch passing the query
-  // this will return an object with the following properties:
-  // books, error, isLoading, isError, isSuccess
-  // 💣 delete start
-  const {data, error, isLoading, isError, isSuccess, run} = useAsync()
-
-  React.useEffect(() => {
-    run(booksClient.search(query))
-  }, [run, query])
-
-  const books = data?.books ?? []
-  // 💣 delete end
+  const {books, error, isLoading, isError, isSuccess} = useBookSearch(query)
 
   function handleSearchClick(event) {
     event.preventDefault()

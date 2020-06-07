@@ -6,12 +6,9 @@ import debounceFn from 'debounce-fn'
 import {FaRegCalendarAlt} from 'react-icons/fa'
 import Tooltip from '@reach/tooltip'
 import {useParams} from 'react-router-dom'
-// 🐨 get useBook from 'utils/books'
-// 🐨 get useListItem and useUpdateListItem from 'utils/list-items'
+import {useBook} from 'utils/books'
 import {formatDate} from 'utils/misc'
-import * as booksClient from 'utils/books-client'
-import {useAsync} from 'utils/use-async'
-import {loadingBook} from 'utils/book-placeholder'
+import {useListItem, useUpdateListItem} from 'utils/list-items'
 import * as mq from 'styles/media-queries'
 import * as colors from 'styles/colors'
 import {Textarea} from 'components/lib'
@@ -20,22 +17,10 @@ import {StatusButtons} from 'components/status-buttons'
 
 function BookScreen() {
   const {bookId} = useParams()
-  // 🐨 Replace all this logic with a simple call to useBook by passing the bookId
-  // and you'll get the book in return
-  // 💣 delete start
-  const {data, run} = useAsync()
-
-  React.useEffect(() => {
-    run(booksClient.read(bookId))
-  }, [run, bookId])
-
-  const book = data?.book ?? loadingBook
-  // 💣 delete end
+  const book = useBook(bookId)
+  const listItem = useListItem(bookId)
 
   const {title, author, coverImageUrl, publisher, synopsis} = book
-
-  // get the listItem for the book by calling useListItem and passing the bookId
-  const listItem = null
 
   return (
     <div>
@@ -113,13 +98,11 @@ function ListItemTimeframe({listItem}) {
 }
 
 function NotesTextarea({listItem}) {
-  // 🐨 get the mutate function from useUpdateListItem
-  // 💰 the update function (aka "mutate") is the first element of the returned array
-  const update = () => {}
-  const debouncedUpdate = React.useCallback(debounceFn(update, {wait: 300}), [])
+  const [mutate] = useUpdateListItem()
+  const debouncedMutate = React.useCallback(debounceFn(mutate, {wait: 300}), [])
 
   function handleNotesChange(e) {
-    debouncedUpdate({id: listItem.id, notes: e.target.value})
+    debouncedMutate({id: listItem.id, notes: e.target.value})
   }
 
   return (

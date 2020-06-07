@@ -2,7 +2,7 @@
 import {jsx} from '@emotion/core'
 
 import React from 'react'
-// 🐨 get useUpdateListItem from 'utils/list-items'
+import {useUpdateListItem} from 'utils/list-items'
 import {FaStar} from 'react-icons/fa'
 import * as colors from 'styles/colors'
 
@@ -20,9 +20,7 @@ const visuallyHiddenCSS = {
 function Rating({listItem}) {
   const [isTabbing, setIsTabbing] = React.useState(false)
 
-  // 🐨 get the update function from useUpdateListItem
-  // 💰 the update function (aka "mutate") is the first element of the returned array
-  const update = () => {}
+  const [update, {error}] = useUpdateListItem()
 
   React.useEffect(() => {
     function handleKeyDown(event) {
@@ -102,6 +100,21 @@ function Rating({listItem}) {
       }}
     >
       <span css={{display: 'flex'}}>{stars}</span>
+      {error ? (
+        <span css={{color: colors.danger, fontSize: '0.7em'}}>
+          <span>There was an error:</span>{' '}
+          <pre
+            css={{
+              display: 'inline-block',
+              overflow: 'scroll',
+              margin: '0',
+              marginBottom: -5,
+            }}
+          >
+            {error.message}
+          </pre>
+        </span>
+      ) : null}
     </div>
   )
 }
